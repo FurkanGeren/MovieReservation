@@ -35,5 +35,8 @@ public class Showtime extends BaseEntity{
 
     private Integer capacityTotal;
 
+    @OneToMany(mappedBy = "showTime", fetch = FetchType.LAZY)
+    private List<Reservation> reservations;
+
 
 }

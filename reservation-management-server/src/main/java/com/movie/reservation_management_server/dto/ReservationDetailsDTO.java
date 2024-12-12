@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 public class ReservationDetailsDTO {
 
+    private Long reservationId;
 
     private String movieDate;
 

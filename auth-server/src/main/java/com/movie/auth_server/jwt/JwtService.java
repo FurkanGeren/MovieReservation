@@ -10,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,12 +44,11 @@ public class JwtService {
     }
 
     private SecretKey getKey() {
-        //byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractUserName(String token) {
+    public String extractUserId(String token) {
         // extract the username from jwt token
         return extractClaim(token, Claims::getSubject);
     }
@@ -71,7 +67,7 @@ public class JwtService {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
+        final String userName = extractUserId(token);
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 

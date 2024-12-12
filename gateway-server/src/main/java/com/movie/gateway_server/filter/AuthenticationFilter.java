@@ -39,6 +39,8 @@ public class AuthenticationFilter implements GatewayFilter {
 
         String token = jwtUtil.extractTokenFromCookie(exchange);
 
+        log.info("token: {}", token);
+
         if (routerValidator.isSecured.test(request)) {
             if (token != null && token.startsWith("Bearer ")) token = token.substring(7);
 
@@ -49,16 +51,19 @@ public class AuthenticationFilter implements GatewayFilter {
                 log.info("Roles: {}", roles);
 
                 // Rollere göre erişim kontrolü
-                if (request.getPath().toString().contains("/user") && !roles.contains("USER")) {
+                if (request.getPath().toString().contains("/reservation") && !roles.contains("USER")) {
+                    log.info("User girdi");
                     return onError(exchange);
                 } else if (request.getPath().toString().contains("/add/") && !roles.contains("ADMIN")) {
                     return onError(exchange);
                 }
-                String userName = jwtUtil.extractUserName(token);
+                String userId = jwtUtil.extractUserName(token);
 
-                exchange.getRequest().mutate()
-                        .header("X-User-Name", userName)
+                ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                        .header("X-User-Name", userId)
                         .build();
+
+                exchange = exchange.mutate().request(mutatedRequest).build();
 
             } catch (Exception e) {
                 return onError(exchange);

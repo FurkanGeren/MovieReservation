@@ -47,11 +47,23 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         }).toList();
 
         return ReservationDetailsDTO.builder()
+                .reservationId(showtime.getId())
                 .movieDate(String.valueOf(showtime.getShowDate()))
                 .movieTime(showtime.getShowTime().format(formatter))
                 .capacityDTOS(capacityDTOS)
                 .build();
     }
+
+    @Override
+    public Showtime getShowtime(Long id) {
+        return showTimeRepository.findByIdWithLock(id).orElseThrow(); // TODO
+    }
+
+    @Override
+    public void removeSeat(Showtime showtime) {
+        showTimeRepository.save(showtime);
+    }
+
 
     private List<Integer> getTotalSeatsForShowtime(int totalSeats) {
         return IntStream.range(1, totalSeats + 1).boxed().collect(Collectors.toList());
