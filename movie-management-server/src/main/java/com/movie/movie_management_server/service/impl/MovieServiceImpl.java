@@ -1,5 +1,6 @@
 package com.movie.movie_management_server.service.impl;
 
+import com.movie.movie_management_server.convertor.MovieConvertor;
 import com.movie.movie_management_server.dto.MovieDTO;
 import com.movie.movie_management_server.dto.request.MovieRequestDTO;
 import com.movie.movie_management_server.entity.Genre;
@@ -8,9 +9,11 @@ import com.movie.movie_management_server.entity.Movie;
 import com.movie.movie_management_server.repository.MovieRepository;
 import com.movie.movie_management_server.service.GenreService;
 import com.movie.movie_management_server.service.MovieService;
+import com.movie.movie_management_server.service.ShowTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
@@ -76,5 +79,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie getMovieById(Long id){
         return movieRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public MovieDTO getMovieDTOById(Long id) {
+        Movie movie = movieRepository.findById(id).orElseThrow(); // TODO
+        return MovieConvertor.toDTO(movie);
     }
 }

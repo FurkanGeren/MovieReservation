@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 public class MovieDTO {
 
+
     private String movieTitle;
 
     private String description;

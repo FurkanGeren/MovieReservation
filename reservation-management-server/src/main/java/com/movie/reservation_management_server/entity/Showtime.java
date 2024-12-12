@@ -1,11 +1,9 @@
-package com.movie.movie_management_server.entity;
+package com.movie.reservation_management_server.entity;
 
 
-import com.movie.movie_management_server.convertor.CapacityJsonConverter;
+import com.movie.reservation_management_server.convertor.*;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
-
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,6 +31,7 @@ public class Showtime extends BaseEntity{
     @Convert(converter = CapacityJsonConverter.class)
     @Column(name = "capacity", nullable = false, columnDefinition = "TEXT")
     private List<Integer> capacity;
+
 
     private Integer capacityTotal;
 

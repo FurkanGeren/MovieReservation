@@ -32,4 +32,9 @@ public class ShowTimeController {
         LocalDate date = (dateStr == null || dateStr.isEmpty()) ? LocalDate.now() : LocalDate.parse(dateStr);
         return ResponseEntity.ok(showTimeService.getShowTime(date));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ShowTimeDTO> getAllShowTimes(@PathVariable Long id){
+        return ResponseEntity.ok(showTimeService.getShowTimeById(id));
+    }
 }

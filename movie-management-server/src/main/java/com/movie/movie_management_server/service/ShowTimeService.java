@@ -10,4 +10,6 @@ public interface ShowTimeService {
     void addShowTime(ShowTimeRequestDTO showTimeRequestDTO);
 
     List<ShowTimeDTO> getShowTime(LocalDate date);
+
+    ShowTimeDTO getShowTimeById(Long id);
 }

@@ -38,6 +38,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
         Showtime showtime = Showtime.builder()
                 .showTime(showTimeRequestDTO.getTime())
+                .capacityTotal(showTimeRequestDTO.getCapacity())
                 .capacity(capacities)
                 .showDate(showTimeRequestDTO.getDate())
                 .movie(movie)
@@ -51,11 +52,25 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         List<Showtime> showtimes = showTimeRepository.findAllByShowDate(date);
         return showtimes.stream()
                 .map(showtime -> ShowTimeDTO.builder()
+                        .id(showtime.getId())
                         .movie(MovieConvertor.toDTO(showtime.getMovie()))
                         .time(showtime.getShowTime())
                         .date(showtime.getShowDate())
                         .capacity(showtime.getCapacity())
                         .build()).toList();
+    }
+
+    @Override
+    public ShowTimeDTO getShowTimeById(Long id) {
+        Showtime showtime = showTimeRepository.findById(id).orElseThrow(); // TODO
+
+        return ShowTimeDTO.builder()
+                .id(showtime.getId())
+                .movie(MovieConvertor.toDTO(showtime.getMovie()))
+                .capacity(showtime.getCapacity())
+                .time(showtime.getShowTime())
+                .date(showtime.getShowDate())
+                .build();
     }
 
     private Movie getMovieById(Long movieId) {

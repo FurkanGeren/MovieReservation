@@ -32,6 +32,11 @@ public class MovieController {
         return ResponseEntity.ok("Movie added successfully");
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
+        return ResponseEntity.ok(movieService.getMovieDTOById(id));
+    }
+
 
 
 

@@ -11,6 +11,8 @@ import java.util.List;
 @Builder
 public class ShowTimeDTO {
 
+    private Long id;
+
     private MovieDTO movie;
 
     private LocalTime time;

@@ -51,7 +51,7 @@ public class AuthenticationFilter implements GatewayFilter {
                 // Rollere göre erişim kontrolü
                 if (request.getPath().toString().contains("/user") && !roles.contains("USER")) {
                     return onError(exchange);
-                } else if (request.getPath().toString().contains("/add") && !roles.contains("ADMIN")) {
+                } else if (request.getPath().toString().contains("/add/") && !roles.contains("ADMIN")) {
                     return onError(exchange);
                 }
                 String userName = jwtUtil.extractUserName(token);

@@ -24,6 +24,11 @@ public class GatewayConfig {
                 .route("movie-management-server", r -> r.path("/api/movie-management/**")
                         .filters(f -> f.stripPrefix(1).filter(filter))
                         .uri("lb://MOVIE-MANAGEMENT-SERVER"))
+                .route("reservation-management-server", r -> r.path("/api/reservation-management/**")
+                        .filters(f -> f.stripPrefix(1).filter(filter))
+                        .uri("lb://RESERVATION-MANAGEMENT-SERVER"))
                 .build();
     }
 }
+
+
