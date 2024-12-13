@@ -47,7 +47,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         }).toList();
 
         return ReservationDetailsDTO.builder()
-                .reservationId(showtime.getId())
+                .showTimeId(showtime.getId())
                 .movieDate(String.valueOf(showtime.getShowDate()))
                 .movieTime(showtime.getShowTime().format(formatter))
                 .capacityDTOS(capacityDTOS)
@@ -63,6 +63,15 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     public void removeSeat(Showtime showtime) {
         showTimeRepository.save(showtime);
     }
+
+    @Override
+    public void updateShowTime(Showtime showTime, String seatNumber) {
+        showTime.getCapacity().add(Integer.valueOf(seatNumber));
+        showTime.getCapacity().sort(Integer::compareTo);
+        showTimeRepository.save(showTime);
+    }
+
+
 
 
     private List<Integer> getTotalSeatsForShowtime(int totalSeats) {

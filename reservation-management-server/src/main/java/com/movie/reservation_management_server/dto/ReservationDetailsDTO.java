@@ -9,13 +9,12 @@ import java.util.List;
 @Builder
 public class ReservationDetailsDTO {
 
-    private Long reservationId;
+    private Long showTimeId;
 
     private String movieDate;
 
     private String movieTime;
 
     private List<CapacityDTO> capacityDTOS;
-
 
 }

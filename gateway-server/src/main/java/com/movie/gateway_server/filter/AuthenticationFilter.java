@@ -57,6 +57,9 @@ public class AuthenticationFilter implements GatewayFilter {
                 } else if (request.getPath().toString().contains("/add/") && !roles.contains("ADMIN")) {
                     return onError(exchange);
                 }
+                else if (request.getPath().toString().contains("/admin/") && !roles.contains("ADMIN")) {
+                    return onError(exchange);
+                }
                 String userId = jwtUtil.extractUserName(token);
 
                 ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()

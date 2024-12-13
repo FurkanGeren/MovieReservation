@@ -23,4 +23,7 @@ public class Reservation extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "show_time_id", referencedColumnName = "id", nullable = false)
     private Showtime showTime;
+
+    private String  status;
+
 }

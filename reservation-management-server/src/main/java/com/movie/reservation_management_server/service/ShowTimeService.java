@@ -10,4 +10,7 @@ public interface ShowTimeService {
     Showtime getShowtime(Long id);
 
     void removeSeat(Showtime showtime);
+
+    void updateShowTime(Showtime showTime, String seatNumber);
+
 }
