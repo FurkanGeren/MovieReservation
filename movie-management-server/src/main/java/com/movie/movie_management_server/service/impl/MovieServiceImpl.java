@@ -6,14 +6,13 @@ import com.movie.movie_management_server.dto.request.MovieRequestDTO;
 import com.movie.movie_management_server.entity.Genre;
 import com.movie.movie_management_server.entity.Image;
 import com.movie.movie_management_server.entity.Movie;
+import com.movie.movie_management_server.exception.MovieNotFoundException;
 import com.movie.movie_management_server.repository.MovieRepository;
 import com.movie.movie_management_server.service.GenreService;
 import com.movie.movie_management_server.service.MovieService;
-import com.movie.movie_management_server.service.ShowTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
@@ -58,19 +57,11 @@ public class MovieServiceImpl implements MovieService {
                 .genres(genres)
                 .build();
 
-//        Set<Image> images = movieRequestDTO.getImageBytes().stream()
-//                .map(image -> Image.builder()
-//                        .bytes(image.getBytes())
-//                        .movie(movie)
-//                        .build())
-//                .collect(Collectors.toSet());
-
         Image image = Image.builder()
                 .bytes(movieRequestDTO.getImageByte().getBytes())
                 .movie(movie)
                 .build();
 
-        // Set the images to the movie entity
         movie.setImage(image);
 
         movieRepository.save(movie);
@@ -83,7 +74,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDTO getMovieDTOById(Long id) {
-        Movie movie = movieRepository.findById(id).orElseThrow(); // TODO
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException("Movie not found"));
         return MovieConvertor.toDTO(movie);
     }
 }

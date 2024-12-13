@@ -6,11 +6,11 @@ import com.movie.reservation_management_server.dto.ReservationsForAdminDTO;
 import java.util.List;
 
 public interface ReservationService {
-    void createReservation(String userEmail, Long showtimeId, Integer seatNumber);
+    void createReservation(String userId, Long showtimeId, Integer seatNumber);
 
-    List<ReservationDTO> getReservationsByUser(String userEmail);
+    List<ReservationDTO> getReservationsByUser(String userId);
 
-    void cancelReservation(String userEmail, Long reservationId);
+    void cancelReservation(String userId, Long reservationId);
 
     List<ReservationsForAdminDTO> getReservations();
 }

@@ -5,6 +5,10 @@ import com.movie.reservation_management_server.dto.ReservationsForAdminDTO;
 import com.movie.reservation_management_server.entity.Reservation;
 import com.movie.reservation_management_server.entity.ReservationStatus;
 import com.movie.reservation_management_server.entity.Showtime;
+import com.movie.reservation_management_server.exception.ReservationCouldNotCancelException;
+import com.movie.reservation_management_server.exception.ReservationNotFoundException;
+import com.movie.reservation_management_server.exception.SeatNotAvailableException;
+import com.movie.reservation_management_server.exception.UserDoesNotBelongException;
 import com.movie.reservation_management_server.repository.ReservationRepository;
 import com.movie.reservation_management_server.service.ReservationService;
 import com.movie.reservation_management_server.service.ShowTimeService;
@@ -37,18 +41,18 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void createReservation(String userEmail, Long showtimeId, Integer seatNumber) {
+    public void createReservation(String userId, Long showtimeId, Integer seatNumber) {
 
         Showtime showtime = showTimeService.getShowtime(showtimeId);
         
 
         if(!showtime.getCapacity().contains(seatNumber)){
-            throw new RuntimeException("Seat is not available."); // TODO
+            throw new SeatNotAvailableException("Seat is not available.");
         }
         Reservation reservation = Reservation.builder()
                 .seatNumber(String.valueOf(seatNumber))
                 .showTime(showtime)
-                .userId(userEmail)
+                .userId(userId)
                 .status(ReservationStatus.ACTIVE.toString())
                 .build();
         showtime.getCapacity().remove(seatNumber);
@@ -59,9 +63,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationDTO> getReservationsByUser(String userEmail) {
+    public List<ReservationDTO> getReservationsByUser(String userId) {
         //List<Reservation> reservations = reservationRepository.findUpcomingReservationsByUserId(userEmail).orElse(null);
-        List<Reservation> reservations = reservationRepository.findAllByUserId(userEmail).orElse(null);
+        List<Reservation> reservations = reservationRepository.findAllByUserId(userId).orElse(null);
         if(reservations == null)
             return null;
 
@@ -95,21 +99,22 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void cancelReservation(String userEmail, Long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(); // TODO
+    public void cancelReservation(String userId, Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException("Reservation not found."));
 
-       if (!reservation.getUserId().equals(userEmail)) {
-           throw new RuntimeException("User does not belong to the user email"); // TODO
+       if (!reservation.getUserId().equals(userId)) {
+           throw new UserDoesNotBelongException("User does not belong to the user email");
        }
 
         LocalDate showDate = reservation.getShowTime().getShowDate();
         LocalTime showTime = reservation.getShowTime().getShowTime();
 
         if(reservation.getStatus().equals(ReservationStatus.PASSED.toString())){
-            throw new RuntimeException("Cannot cancel the reservation because the show date and time has passed");
+            throw new ReservationCouldNotCancelException("Cannot cancel the reservation because the show date and time has passed");
         } else if (showDate.isBefore(LocalDate.now()) ||
                 (showDate.isEqual(LocalDate.now()) && showTime.isBefore(LocalTime.now()))) {
-            throw new RuntimeException("Cannot cancel the reservation because the show date and time has passed");
+            throw new ReservationCouldNotCancelException("Cannot cancel the reservation because the show date and time has passed");
         }
         reservation.setStatus(ReservationStatus.CANCELLED.toString());
         reservationRepository.save(reservation);

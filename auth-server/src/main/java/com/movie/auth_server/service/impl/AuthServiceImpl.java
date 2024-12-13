@@ -8,7 +8,6 @@ import com.movie.auth_server.jwt.JwtService;
 import com.movie.auth_server.repository.UserRepository;
 import com.movie.auth_server.service.AuthService;
 import com.movie.auth_server.utiliy.CookieUtility;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
@@ -80,7 +79,6 @@ public class AuthServiceImpl implements AuthService {
             Cookie jwtCookie = CookieUtility.createCookie(jwtToken, 86400, "movie_auth_cookie");
             response.addCookie(jwtCookie);
         } catch (AuthenticationException e) {
-            // Burada hata mesajı veya başka işlem yapabilirsiniz
             throw new RuntimeException("Authentication failed", e);
         }
     }

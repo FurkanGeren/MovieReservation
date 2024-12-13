@@ -2,15 +2,15 @@ package com.movie.reservation_management_server.service.impl;
 
 import com.movie.reservation_management_server.dto.CapacityDTO;
 import com.movie.reservation_management_server.dto.ReservationDetailsDTO;
-import com.movie.reservation_management_server.dto.ShowTimeDTO;
 import com.movie.reservation_management_server.entity.Showtime;
+import com.movie.reservation_management_server.exception.SeatsExceedsCapacityException;
+import com.movie.reservation_management_server.exception.ShowTimeNotFoundException;
 import com.movie.reservation_management_server.repository.ShowTimeRepository;
 import com.movie.reservation_management_server.service.ShowTimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,12 +28,12 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public ReservationDetailsDTO getReservationDetailsByShowTimeId(Long id) {
-        Showtime showtime = showTimeRepository.findById(id).orElseThrow(); // TODO
+        Showtime showtime = showTimeRepository.findById(id).orElseThrow(() -> new ShowTimeNotFoundException("Show time not found."));
         List<Integer> availableSeats = showtime.getCapacity();
         List<Integer> totalSeats = getTotalSeatsForShowtime(showtime.getCapacityTotal());
         log.info("Total Seats: {}", totalSeats);
         if (totalSeats.size() > showtime.getCapacityTotal())
-            throw new RuntimeException("Total Seats exceeds Capacity"); // TODO
+            throw new SeatsExceedsCapacityException("Total Seats exceeds Capacity");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -56,7 +56,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public Showtime getShowtime(Long id) {
-        return showTimeRepository.findByIdWithLock(id).orElseThrow(); // TODO
+        return showTimeRepository.findByIdWithLock(id).orElseThrow(() -> new ShowTimeNotFoundException("Show time not found."));
     }
 
     @Override

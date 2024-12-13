@@ -26,19 +26,19 @@ public class ReservationController {
 
 
     @GetMapping("/create")
-    public ResponseEntity<?> addReservation(@RequestHeader(value = "X-User-Name") String userEmail,
+    public ResponseEntity<?> addReservation(@RequestHeader(value = "X-User-Name") String userId,
                                             @RequestParam Long showtimeId,
                                             @RequestParam Integer seatNumber) {
-        log.info("UserId {}", userEmail);
+        log.info("UserId {}", userId);
         log.info("Reservation ID: {}, Seat Number: {}", showtimeId, seatNumber);
-        reservationService.createReservation(userEmail,showtimeId,seatNumber);
+        reservationService.createReservation(userId,showtimeId,seatNumber);
 
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> addReservation(@RequestHeader(value = "X-User-Name") String userEmail){
-        List<ReservationDTO> reservations = reservationService.getReservationsByUser(userEmail);
+    public ResponseEntity<?> addReservation(@RequestHeader(value = "X-User-Name") String userId){
+        List<ReservationDTO> reservations = reservationService.getReservationsByUser(userId);
         if (reservations.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No reservations found for the user.");
         }
@@ -46,9 +46,9 @@ public class ReservationController {
     }
 
     @GetMapping("/cancel")
-    public ResponseEntity<?> cancelReservation(@RequestHeader(value = "X-User-Name") String userEmail,
+    public ResponseEntity<?> cancelReservation(@RequestHeader(value = "X-User-Name") String userId,
                                                @RequestParam Long reservationId){
-        reservationService.cancelReservation(userEmail, reservationId);
+        reservationService.cancelReservation(userId, reservationId);
         return ResponseEntity.ok("Reservation has been cancelled.");
     }
 

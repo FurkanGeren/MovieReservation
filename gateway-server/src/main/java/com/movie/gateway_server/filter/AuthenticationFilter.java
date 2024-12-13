@@ -52,7 +52,6 @@ public class AuthenticationFilter implements GatewayFilter {
 
                 // Rollere göre erişim kontrolü
                 if (request.getPath().toString().contains("/reservation") && !roles.contains("USER")) {
-                    log.info("User girdi");
                     return onError(exchange);
                 } else if (request.getPath().toString().contains("/add/") && !roles.contains("ADMIN")) {
                     return onError(exchange);

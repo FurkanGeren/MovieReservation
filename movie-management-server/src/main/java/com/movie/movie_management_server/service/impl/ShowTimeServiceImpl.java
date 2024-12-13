@@ -6,6 +6,7 @@ import com.movie.movie_management_server.dto.ShowTimeDTO;
 import com.movie.movie_management_server.dto.request.ShowTimeRequestDTO;
 import com.movie.movie_management_server.entity.Movie;
 import com.movie.movie_management_server.entity.Showtime;
+import com.movie.movie_management_server.exception.ShowTimeNotFoundException;
 import com.movie.movie_management_server.repository.ShowTimeRepository;
 import com.movie.movie_management_server.service.MovieService;
 import com.movie.movie_management_server.service.ShowTimeService;
@@ -62,7 +63,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public ShowTimeDTO getShowTimeById(Long id) {
-        Showtime showtime = showTimeRepository.findById(id).orElseThrow(); // TODO
+        Showtime showtime = showTimeRepository.findById(id).orElseThrow(() -> new ShowTimeNotFoundException("Show time not found"));
 
         return ShowTimeDTO.builder()
                 .id(showtime.getId())
